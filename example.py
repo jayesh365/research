@@ -36,6 +36,7 @@ from models.s4.s4 import S4Block as S4  # Can use full version instead of minima
 from models.s4.s4d import S4D
 from tqdm.auto import tqdm
 
+
 # Dropout broke in PyTorch 1.11
 if tuple(map(int, torch.__version__.split('.')[:2])) == (1, 11):
     print("WARNING: Dropout is bugged in PyTorch 1.11. Results may be worse.")
@@ -76,6 +77,19 @@ start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
 # Data
 print(f'==> Preparing {args.dataset} data..')
+
+
+import wandb
+wandb.init(
+    project="s4",
+    config={
+        "learning_rate": args.lr,
+        "architecture": "S4",
+        "dataset": args.dataset,
+        "epochs": args.epochs,
+    }
+)
+
 
 def split_train_val(train, val_split):
     train_len = int(len(train) * (1.0-val_split))
@@ -188,6 +202,7 @@ class S4Model(nn.Module):
         """
         x = self.encoder(x)  # (B, L, d_input) -> (B, L, d_model)
 
+        print('B, L, d_model: ', x.shape)
         x = x.transpose(-1, -2)  # (B, L, d_model) -> (B, d_model, L)
         for layer, norm, dropout in zip(self.s4_layers, self.norms, self.dropouts):
             # Each iteration of this loop will map (B, d_model, L) -> (B, d_model, L)
@@ -299,6 +314,7 @@ optimizer, scheduler = setup_optimizer(
 # Everything after this point is standard PyTorch training!
 ###############################################################################
 
+
 # Training
 def train():
     model.train()
@@ -312,6 +328,10 @@ def train():
         outputs = model(inputs)
         loss = criterion(outputs, targets)
         loss.backward()
+
+
+
+
         optimizer.step()
 
         train_loss += loss.item()
@@ -323,6 +343,9 @@ def train():
             'Batch Idx: (%d/%d) | Loss: %.3f | Acc: %.3f%% (%d/%d)' %
             (batch_idx, len(trainloader), train_loss/(batch_idx+1), 100.*correct/total, correct, total)
         )
+
+        wandb.log({"train_loss": train_loss / (batch_idx + 1), "train_acc": 100. * correct / total, "epoch": epoch})
+
 
 
 def eval(epoch, dataloader, checkpoint=False):
@@ -342,11 +365,12 @@ def eval(epoch, dataloader, checkpoint=False):
             _, predicted = outputs.max(1)
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
-
             pbar.set_description(
                 'Batch Idx: (%d/%d) | Loss: %.3f | Acc: %.3f%% (%d/%d)' %
                 (batch_idx, len(dataloader), eval_loss/(batch_idx+1), 100.*correct/total, correct, total)
             )
+
+            wandb.log({"val_loss": eval_loss / (batch_idx + 1), "val_acc": 100. * correct / total, "epoch": epoch})
 
     # Save checkpoint.
     if checkpoint:
@@ -373,6 +397,9 @@ for epoch in pbar:
     train()
     val_acc = eval(epoch, valloader, checkpoint=True)
     eval(epoch, testloader)
-    scheduler.step()
+    scheduler.step()    
     # print(f"Epoch {epoch} learning rate: {scheduler.get_last_lr()}")
+    wandb.log({"val_acc": val_acc, "epoch": epoch})
 
+
+wandb.finish()

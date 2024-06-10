@@ -1,0 +1,57 @@
+2024-06-04 21:17:07,186 INFO    StreamThr :12043 [internal.py:wandb_internal():86] W&B internal server running at pid: 12043, started at: 2024-06-04 21:17:07.186374
+2024-06-04 21:17:07,188 DEBUG   HandlerThread:12043 [handler.py:handle_request():146] handle_request: status
+2024-06-04 21:17:12,189 DEBUG   HandlerThread:12043 [handler.py:handle_request():146] handle_request: status_report
+2024-06-04 21:17:12,190 INFO    WriterThread:12043 [datastore.py:open_for_write():87] open: /data/khullar/Desktop/s4/s4/wandb/run-20240604_211645-yypva33o/run-yypva33o.wandb
+2024-06-04 21:17:17,190 DEBUG   HandlerThread:12043 [handler.py:handle_request():146] handle_request: status_report
+2024-06-04 21:17:21,673 DEBUG   SenderThread:12043 [sender.py:send():382] send: header
+2024-06-04 21:17:21,963 DEBUG   SenderThread:12043 [sender.py:send():382] send: run
+2024-06-04 21:17:26,856 DEBUG   HandlerThread:12043 [handler.py:handle_request():146] handle_request: keepalive
+2024-06-04 21:17:31,852 DEBUG   HandlerThread:12043 [handler.py:handle_request():146] handle_request: keepalive
+2024-06-04 21:17:36,848 DEBUG   HandlerThread:12043 [handler.py:handle_request():146] handle_request: keepalive
+2024-06-04 21:17:39,754 ERROR   SenderThread:12043 [internal_api.py:execute():373] 400 response executing GraphQL.
+2024-06-04 21:17:39,754 ERROR   SenderThread:12043 [internal_api.py:execute():374] {"errors":[{"message":"run config cannot exceed 15 MB","path":["upsertBucket"]}],"data":{"upsertBucket":null}}
+2024-06-04 21:17:39,754 ERROR   SenderThread:12043 [sender.py:send_run():987] run config cannot exceed 15 MB (Error 400: Bad Request)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/wandb/apis/normalize.py", line 41, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 2216, in upsert_run
+    response = self.gql(
+               ^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 341, in gql
+    ret = self._retry_gql(
+          ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/wandb/sdk/lib/retry.py", line 131, in __call__
+    result = self._call_fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/wandb/sdk/internal/internal_api.py", line 369, in execute
+    return self.client.execute(*args, **kwargs)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 52, in execute
+    result = self._get_result(document, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/wandb/vendor/gql-0.2.0/wandb_gql/client.py", line 60, in _get_result
+    return self.transport.execute(document, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/wandb/sdk/lib/gql_request.py", line 59, in execute
+    request.raise_for_status()
+  File "/usr/local/lib/python3.11/site-packages/requests/models.py", line 1021, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://api.wandb.ai/graphql
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/wandb/sdk/internal/sender.py", line 985, in send_run
+    self._init_run(run, config_value_dict)
+  File "/usr/local/lib/python3.11/site-packages/wandb/sdk/internal/sender.py", line 1027, in _init_run
+    server_run, inserted, server_messages = self._api.upsert_run(
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/wandb/apis/normalize.py", line 51, in wrapper
+    raise CommError(message, error)
+wandb.errors.CommError: run config cannot exceed 15 MB (Error 400: Bad Request)
+2024-06-04 21:17:39,771 DEBUG   HandlerThread:12043 [handler.py:handle_request():146] handle_request: status_report
+2024-06-04 21:17:40,192 DEBUG   HandlerThread:12043 [handler.py:handle_request():146] handle_request: shutdown
+2024-06-04 21:17:40,192 INFO    HandlerThread:12043 [handler.py:finish():869] shutting down handler
+2024-06-04 21:17:40,771 INFO    SenderThread:12043 [sender.py:finish():1572] shutting down sender
+2024-06-04 21:17:40,772 INFO    WriterThread:12043 [datastore.py:close():296] close: /data/khullar/Desktop/s4/s4/wandb/run-20240604_211645-yypva33o/run-yypva33o.wandb

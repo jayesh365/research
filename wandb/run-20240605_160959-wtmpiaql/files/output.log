@@ -1,0 +1,8 @@
+Optimizer group 0 | 28 tensors | lr 0.01 | weight_decay 0.01
+Optimizer group 1 | 12 tensors | lr 0.001 | weight_decay 0.0
+0it [00:00, ?it/s]
+Traceback (most recent call last):
+  File "/data/khullar/Desktop/s4/s4/custom_example.py", line 458, in <module>
+    outputs = torch.sigmoid(model(inputs).unsqueeze(-1).cpu().detach())
+                            ^^^^^^^^^^^^^
+TypeError: 'dict' object is not callable

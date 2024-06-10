@@ -1,0 +1,28 @@
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_setup.py:_flush():76] Current SDK version is 0.16.3
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_setup.py:_flush():76] Configure stats pid to 5552
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_setup.py:_flush():76] Loading settings from /data/khullar/.config/wandb/settings
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_setup.py:_flush():76] Loading settings from /data/khullar/Desktop/s4/s4/wandb/settings
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'lstm_example.py', 'program_abspath': '/data/khullar/Desktop/s4/s4/lstm_example.py', 'program': '/data/khullar/Desktop/s4/s4/lstm_example.py'}
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_init.py:_log_setup():526] Logging user logs to /data/khullar/Desktop/s4/s4/wandb/run-20240610_172337-vd73ce0v/logs/debug.log
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_init.py:_log_setup():527] Logging internal logs to /data/khullar/Desktop/s4/s4/wandb/run-20240610_172337-vd73ce0v/logs/debug-internal.log
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_init.py:init():566] calling init triggers
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_init.py:init():573] wandb.init called with sweep_config: {}
+config: {'learning_rate': 0.001, 'architecture': 'LSTM', 'train_set': <__main__.AlternatingSignalDataset object at 0x7fa8b4d65010>, 'epochs': 100}
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_init.py:init():616] starting backend
+2024-06-10 17:23:37,383 INFO    MainThread:5552 [wandb_init.py:init():620] setting up manager
+2024-06-10 17:23:37,384 INFO    MainThread:5552 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-06-10 17:23:37,384 INFO    MainThread:5552 [wandb_init.py:init():628] backend started and connected
+2024-06-10 17:23:37,385 INFO    MainThread:5552 [wandb_init.py:init():720] updated telemetry
+2024-06-10 17:23:37,388 INFO    MainThread:5552 [wandb_init.py:init():753] communicating run to backend with 90.0 second timeout
+2024-06-10 17:23:37,694 INFO    MainThread:5552 [wandb_run.py:_on_init():2262] communicating current version
+2024-06-10 17:23:37,880 INFO    MainThread:5552 [wandb_run.py:_on_init():2271] got version response upgrade_message: "wandb version 0.17.1 is available!  To upgrade, please run:\n $ pip install wandb --upgrade"
+
+2024-06-10 17:23:37,881 INFO    MainThread:5552 [wandb_init.py:init():804] starting run threads in backend
+2024-06-10 17:23:41,779 INFO    MainThread:5552 [wandb_run.py:_console_start():2241] atexit reg
+2024-06-10 17:23:41,780 INFO    MainThread:5552 [wandb_run.py:_redirect():2096] redirect: wrap_raw
+2024-06-10 17:23:41,780 INFO    MainThread:5552 [wandb_run.py:_redirect():2161] Wrapping output streams.
+2024-06-10 17:23:41,780 INFO    MainThread:5552 [wandb_run.py:_redirect():2186] Redirects installed.
+2024-06-10 17:23:41,781 INFO    MainThread:5552 [wandb_init.py:init():847] run started, returning control to user process
+2024-06-10 17:24:05,818 WARNING MsgRouterThr:5552 [router.py:message_loop():77] message_loop has been closed

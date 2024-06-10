@@ -1,0 +1,19 @@
+Epoch: 0:   0%|                                     | 0/100 [00:00<?, ?it/s]
+
+
+
+Batch Idx: (9/10) | Loss: 0.026: : 10it [00:00, 27.84it/s]]
+Epoch: 1:   1%|▎                            | 1/100 [00:08<14:27,  8.76s/it]
+
+
+
+Batch Idx: (9/10) | Loss: 0.034: : 10it [00:00, 27.89it/s]]
+Epoch: 2:   2%|▌                            | 2/100 [00:17<13:55,  8.52s/it]
+Epoch: 2:   2%|▌                            | 2/100 [00:18<15:05,  9.24s/it]
+Traceback (most recent call last):
+  File "/data/khullar/Desktop/s4/s4/lstm_example.py", line 273, in <module>
+    train()
+  File "/data/khullar/Desktop/s4/s4/lstm_example.py", line 230, in train
+    train_loss += loss.item()
+                  ^^^^^^^^^^^
+KeyboardInterrupt

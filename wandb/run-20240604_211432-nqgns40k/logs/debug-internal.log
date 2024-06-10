@@ -1,0 +1,9 @@
+2024-06-04 21:14:52,711 INFO    StreamThr :11740 [internal.py:wandb_internal():86] W&B internal server running at pid: 11740, started at: 2024-06-04 21:14:52.710825
+2024-06-04 21:14:52,712 DEBUG   HandlerThread:11740 [handler.py:handle_request():146] handle_request: status
+2024-06-04 21:14:57,714 DEBUG   HandlerThread:11740 [handler.py:handle_request():146] handle_request: status_report
+2024-06-04 21:14:57,714 INFO    WriterThread:11740 [datastore.py:open_for_write():87] open: /data/khullar/Desktop/s4/s4/wandb/run-20240604_211432-nqgns40k/run-nqgns40k.wandb
+2024-06-04 21:15:02,714 DEBUG   HandlerThread:11740 [handler.py:handle_request():146] handle_request: status_report
+2024-06-04 21:15:04,468 DEBUG   HandlerThread:11740 [handler.py:handle_request():146] handle_request: shutdown
+2024-06-04 21:15:04,468 INFO    HandlerThread:11740 [handler.py:finish():869] shutting down handler
+2024-06-04 21:15:04,714 INFO    SenderThread:11740 [sender.py:finish():1572] shutting down sender
+2024-06-04 21:15:04,715 INFO    WriterThread:11740 [datastore.py:close():296] close: /data/khullar/Desktop/s4/s4/wandb/run-20240604_211432-nqgns40k/run-nqgns40k.wandb

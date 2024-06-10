@@ -1,0 +1,380 @@
+Optimizer group 0 | 28 tensors | lr 0.01 | weight_decay 0.01
+Optimizer group 1 | 12 tensors | lr 0.001 | weight_decay 0.0
+Epoch: 0:   0%|      | 0/30 [00:00<?, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (128/141) | Loss: 1256.640: : 129it [00:19,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.262: : 1it [00:00, 11.98it/s]5.96it/s]
+Epoch: 1:   3%| | 1/30 [00:21<10:22, 21.45s/, ?it/s]
+
+
+
+
+
+
+
+
+
+
+Batch Idx: (134/141) | Loss: 3.876: : 135it [00:19,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.045: : 1it [00:00, 40.06it/s]9it/s]
+Epoch: 2:   7%| | 2/30 [00:42<09:51, 21.13s/, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (129/141) | Loss: 1.012: : 130it [00:19,  6.80it/s]
+Batch Idx: (0/1) | Loss: 0.024: : 1it [00:00, 20.56it/s]9it/s]
+Epoch: 3:  10%| | 3/30 [01:03<09:27, 21.03s/, ?it/s]
+
+
+
+
+
+
+
+
+
+
+Batch Idx: (136/141) | Loss: 0.493: : 137it [00:20,  6.80it/s]
+Batch Idx: (0/1) | Loss: 0.011: : 1it [00:00, 25.61it/s]1it/s]
+Epoch: 4:  13%|▏| 4/30 [01:24<09:05, 20.98s/, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (130/141) | Loss: 0.322: : 131it [00:19,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.007: : 1it [00:00, 29.54it/s]0it/s]
+Epoch: 5:  17%|▏| 5/30 [01:45<08:43, 20.94s/, ?it/s]
+
+
+
+
+
+
+
+
+
+
+Batch Idx: (138/141) | Loss: 0.286: : 139it [00:20,  6.81it/s]
+Batch Idx: (0/1) | Loss: 0.004: : 1it [00:00, 17.97it/s]0it/s]
+Epoch: 6:  20%|▏| 6/30 [02:05<08:21, 20.92s/, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (133/141) | Loss: 71.186: : 134it [00:19,  6.80it/s]
+Batch Idx: (0/1) | Loss: 0.048: : 1it [00:00, 21.69it/s]80it/s]
+Epoch: 7:  23%|▏| 7/30 [02:26<08:00, 20.91s/, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (0/1) | Loss: 0.016: : 1it [00:00, 39.89it/s]1it/s]
+Epoch: 8:  27%|▎| 8/30 [02:47<07:39, 20.90s/, ?it/s]
+Epoch 7 learning rate: [0.008345653031794291, 0.0008345653031794292]
+
+
+
+
+
+
+
+
+
+Batch Idx: (134/141) | Loss: 0.954: : 135it [00:19,  6.80it/s]
+Batch Idx: (0/1) | Loss: 0.014: : 1it [00:00, 38.81it/s]9it/s]
+Epoch: 9:  30%|▎| 9/30 [03:08<07:18, 20.90s/, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (129/141) | Loss: 0.608: : 130it [00:19,  6.80it/s]
+Batch Idx: (0/1) | Loss: 0.007: : 1it [00:00, 28.44it/s]8it/s]
+Epoch: 10:  33%|▎| 10/30 [03:29<06:57, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+
+Batch Idx: (136/141) | Loss: 0.458: : 137it [00:20,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.005: : 1it [00:00, 41.66it/s]9it/s]
+Epoch: 11:  37%|▎| 11/30 [03:50<06:37, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (130/141) | Loss: 0.736: : 131it [00:19,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.005: : 1it [00:00, 22.63it/s]0it/s]
+Epoch: 12:  40%|▍| 12/30 [04:11<06:16, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+
+Batch Idx: (138/141) | Loss: 0.330: : 139it [00:20,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.004: : 1it [00:00, 25.04it/s]0it/s]
+Epoch: 13:  43%|▍| 13/30 [04:32<05:55, 20.91, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (132/141) | Loss: 0.307: : 133it [00:19,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.004: : 1it [00:00, 42.32it/s]0it/s]
+Epoch: 14:  47%|▍| 14/30 [04:53<05:34, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (140/141) | Loss: 0.319: : 140it [00:20,  6.80it/s]
+0it [00:00, ?it/s]
+Epoch: 15:  50%|▌| 15/30 [05:13<05:13, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (134/141) | Loss: 0.239: : 135it [00:19,  6.80it/s]
+Batch Idx: (0/1) | Loss: 0.003: : 1it [00:00, 22.37it/s]0it/s]
+Epoch: 16:  53%|▌| 16/30 [05:34<04:52, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 34.90it/s]1it/s]
+Epoch: 17:  57%|▌| 17/30 [05:55<04:31, 20.89, ?it/s]
+Batch Idx: (0/141) | Loss: 0.159: : 1it [00:00,  6.71it/s]
+
+
+
+
+
+
+
+
+
+
+Batch Idx: (136/141) | Loss: 0.197: : 137it [00:20,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.003: : 1it [00:00, 24.86it/s]0it/s]
+Epoch: 18:  60%|▌| 18/30 [06:16<04:10, 20.89, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (130/141) | Loss: 0.180: : 131it [00:19,  6.80it/s]
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 38.51it/s]1it/s]
+Epoch: 19:  63%|▋| 19/30 [06:37<03:49, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+
+Batch Idx: (137/141) | Loss: 0.162: : 138it [00:20,  6.80it/s]
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 18.24it/s]1it/s]
+Epoch: 20:  67%|▋| 20/30 [06:58<03:29, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (128/141) | Loss: 0.168: : 129it [00:18,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 33.00it/s]0it/s]
+Epoch: 21:  70%|▋| 21/30 [07:19<03:07, 20.89, ?it/s]
+
+
+
+
+
+
+
+
+
+
+Batch Idx: (136/141) | Loss: 0.150: : 137it [00:20,  6.80it/s]
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 33.39it/s]1it/s]
+Epoch: 22:  73%|▋| 22/30 [07:40<02:47, 20.89, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (130/141) | Loss: 0.154: : 131it [00:19,  6.81it/s]
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 30.07it/s]1it/s]
+Epoch: 23:  77%|▊| 23/30 [08:01<02:26, 20.89, ?it/s]
+
+
+
+
+
+
+
+
+
+
+Batch Idx: (138/141) | Loss: 0.152: : 139it [00:20,  6.81it/s]
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 41.79it/s]1it/s]
+Epoch: 24:  80%|▊| 24/30 [08:22<02:05, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (132/141) | Loss: 0.139: : 133it [00:19,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 28.61it/s]0it/s]
+Epoch: 25:  83%|▊| 25/30 [08:42<01:44, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (140/141) | Loss: 0.141: : 140it [00:20,  6.79it/s]
+0it [00:00, ?it/s]
+Epoch: 26:  87%|▊| 26/30 [09:03<01:23, 20.90, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (134/141) | Loss: 0.130: : 135it [00:19,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 30.34it/s]0it/s]
+Epoch: 27:  90%|▉| 27/30 [09:24<01:02, 20.89, ?it/s]
+
+
+
+
+
+
+
+
+
+Batch Idx: (128/141) | Loss: 0.142: : 129it [00:18,  6.79it/s]
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 27.34it/s]0it/s]
+Epoch: 28:  93%|▉| 28/30 [09:45<00:41, 20.89, ?it/s]
+
+
+
+
+
+
+
+
+
+
+Batch Idx: (136/141) | Loss: 0.123: : 137it [00:20,  6.80it/s]
+Batch Idx: (0/1) | Loss: 0.002: : 1it [00:00, 38.08it/s]0it/s]
+Epoch: 29:  97%|▉| 29/30 [10:06<00:20, 20.89, ?it/s]
+
+
+
+
+
+
+
+
+
+Epoch: 29:  97%|▉| 29/30 [10:26<00:21, 21.59[00:19,  6.79it/s]
+Traceback (most recent call last):
+  File "/data/khullar/Desktop/s4/s4/lstm_example.py", line 15, in <module>
+    from custom_example import generate_alternating_signal, visualize_signals, AlternatingSignalDataset, split_train_val
+  File "/data/khullar/Desktop/s4/s4/custom_example.py", line 403, in <module>
+    train()
+  File "/data/khullar/Desktop/s4/s4/custom_example.py", line 360, in train
+    train_loss += loss.item()
+                  ^^^^^^^^^^^
+KeyboardInterrupt

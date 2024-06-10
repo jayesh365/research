@@ -1,0 +1,9 @@
+Batch Idx: (0/15) | Loss: 0.694: : 0it [00:00, ?it/s]                          | 0/100 [00:00<?, ?it/s]
+Epoch: 0:   0%|                                                                | 0/100 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/data/khullar/Desktop/s4/s4/lstm_example.py", line 149, in <module>
+    train()
+  File "/data/khullar/Desktop/s4/s4/lstm_example.py", line 115, in train
+    wandb.log({"train_loss": train_loss / (batch_idx + 1), "epoch": epoch})
+                                           ^^^^^^^^^
+NameError: name 'batch_idx' is not defined

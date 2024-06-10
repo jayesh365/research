@@ -1,0 +1,21 @@
+2024-05-23 15:19:30,828 INFO    StreamThr :41883 [internal.py:wandb_internal():86] W&B internal server running at pid: 41883, started at: 2024-05-23 15:19:30.828485
+2024-05-23 15:19:30,830 DEBUG   HandlerThread:41883 [handler.py:handle_request():146] handle_request: status
+2024-05-23 15:19:30,831 INFO    WriterThread:41883 [datastore.py:open_for_write():87] open: /data/khullar/Desktop/s4/s4/checkpoints/wandb/run-20240523_151930-58fyjyl5/run-58fyjyl5.wandb
+2024-05-23 15:19:30,831 DEBUG   SenderThread:41883 [sender.py:send():382] send: header
+2024-05-23 15:19:30,832 DEBUG   SenderThread:41883 [sender.py:send():382] send: run
+2024-05-23 15:19:31,032 INFO    SenderThread:41883 [dir_watcher.py:__init__():211] watching files in: /data/khullar/Desktop/s4/s4/checkpoints/wandb/run-20240523_151930-58fyjyl5/files
+2024-05-23 15:19:31,032 INFO    SenderThread:41883 [sender.py:_start_run_threads():1136] run started: 58fyjyl5 with start time 1716491970.828499
+2024-05-23 15:19:31,037 DEBUG   HandlerThread:41883 [handler.py:handle_request():146] handle_request: check_version
+2024-05-23 15:19:31,038 DEBUG   SenderThread:41883 [sender.py:send_request():409] send_request: check_version
+2024-05-23 15:19:32,103 DEBUG   HandlerThread:41883 [handler.py:handle_request():146] handle_request: shutdown
+2024-05-23 15:19:32,103 INFO    HandlerThread:41883 [handler.py:finish():869] shutting down handler
+2024-05-23 15:19:33,038 INFO    WriterThread:41883 [datastore.py:close():296] close: /data/khullar/Desktop/s4/s4/checkpoints/wandb/run-20240523_151930-58fyjyl5/run-58fyjyl5.wandb
+2024-05-23 15:19:34,068 INFO    SenderThread:41883 [sender.py:finish():1572] shutting down sender
+2024-05-23 15:19:34,068 INFO    SenderThread:41883 [dir_watcher.py:finish():358] shutting down directory watcher
+2024-05-23 15:19:35,033 INFO    SenderThread:41883 [dir_watcher.py:finish():388] scan: /data/khullar/Desktop/s4/s4/checkpoints/wandb/run-20240523_151930-58fyjyl5/files
+2024-05-23 15:19:35,034 INFO    SenderThread:41883 [dir_watcher.py:finish():402] scan save: /data/khullar/Desktop/s4/s4/checkpoints/wandb/run-20240523_151930-58fyjyl5/files/config.yaml config.yaml
+2024-05-23 15:19:35,034 INFO    SenderThread:41883 [file_pusher.py:finish():172] shutting down file pusher
+2024-05-23 15:19:35,034 INFO    SenderThread:41883 [file_pusher.py:join():178] waiting for file pusher
+2024-05-23 15:19:35,436 INFO    wandb-upload_0:41883 [upload_job.py:push():131] Uploaded file /data/khullar/Desktop/s4/s4/checkpoints/wandb/run-20240523_151930-58fyjyl5/files/config.yaml
+2024-05-23 15:19:36,035 INFO    SenderThread:41883 [file_stream.py:finish():595] file stream finish called
+2024-05-23 15:19:39,189 INFO    SenderThread:41883 [file_stream.py:finish():599] file stream finish is done

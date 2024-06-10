@@ -1,0 +1,41 @@
+2024-06-04 21:20:56,369 INFO    MainThread:510 [wandb_setup.py:_flush():76] Current SDK version is 0.16.3
+2024-06-04 21:20:56,370 INFO    MainThread:510 [wandb_setup.py:_flush():76] Configure stats pid to 510
+2024-06-04 21:20:56,370 INFO    MainThread:510 [wandb_setup.py:_flush():76] Loading settings from /data/khullar/.config/wandb/settings
+2024-06-04 21:20:56,370 INFO    MainThread:510 [wandb_setup.py:_flush():76] Loading settings from /data/khullar/Desktop/s4/s4/wandb/settings
+2024-06-04 21:20:56,370 INFO    MainThread:510 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-06-04 21:20:56,370 INFO    MainThread:510 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-06-04 21:20:56,370 INFO    MainThread:510 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'custom_example.py', 'program_abspath': '/data/khullar/Desktop/s4/s4/custom_example.py', 'program': '/data/khullar/Desktop/s4/s4/custom_example.py'}
+2024-06-04 21:20:56,370 INFO    MainThread:510 [wandb_init.py:_log_setup():526] Logging user logs to /data/khullar/Desktop/s4/s4/wandb/run-20240604_212056-vccwhxat/logs/debug.log
+2024-06-04 21:20:56,370 INFO    MainThread:510 [wandb_init.py:_log_setup():527] Logging internal logs to /data/khullar/Desktop/s4/s4/wandb/run-20240604_212056-vccwhxat/logs/debug-internal.log
+2024-06-04 21:20:56,370 INFO    MainThread:510 [wandb_init.py:init():566] calling init triggers
+2024-06-04 21:21:08,732 WARNING MainThread:510 [wandb_init.py:init():1198] interrupted
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/wandb/sdk/wandb_init.py", line 1176, in init
+    run = wi.init()
+          ^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/wandb/sdk/wandb_init.py", line 574, in init
+    f"wandb.init called with sweep_config: {self.sweep_config}\nconfig: {self.config}"
+  File "/usr/local/lib/python3.11/site-packages/torch/_tensor.py", line 461, in __repr__
+    return torch._tensor_str._str(self, tensor_contents=tensor_contents)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/torch/_tensor_str.py", line 677, in _str
+    return _str_intern(self, tensor_contents=tensor_contents)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/torch/_tensor_str.py", line 597, in _str_intern
+    tensor_str = _tensor_str(self, indent)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/torch/_tensor_str.py", line 350, in _tensor_str
+    return _tensor_str_with_formatter(self, indent, summarize, formatter)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/torch/_tensor_str.py", line 291, in _tensor_str_with_formatter
+    slices = [
+             ^
+  File "/usr/local/lib/python3.11/site-packages/torch/_tensor_str.py", line 292, in <listcomp>
+    _tensor_str_with_formatter(
+  File "/usr/local/lib/python3.11/site-packages/torch/_tensor_str.py", line 272, in _tensor_str_with_formatter
+    return _vector_str(self, indent, summarize, formatter1, formatter2)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/torch/_tensor_str.py", line 256, in _vector_str
+    data[i : i + elements_per_line] for i in range(0, len(data), elements_per_line)
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
