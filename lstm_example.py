@@ -15,6 +15,13 @@ import os
 import wandb
 
 
+# np.random.seed(10020)
+# np.random.seed(100201)
+# np.random.seed(1005694)
+np.random.seed(789221)
+
+
+
 class AlternatingSignalDataset(Dataset):
     def __init__(self, inputs, targets):
         self.inputs = inputs
@@ -85,11 +92,11 @@ def generate_alternating_signal(every_n, n, num_seq=100, custom_start_sig=None, 
 
 
 
-def visualize_signals(input_signal, output_signal, ind):
+def visualize_signals(input_signal, output_signal, name, col):
     plt.figure(figsize=(14, 6))
 
     # Plot input signal
-    plt.plot(input_signal.numpy().flatten(), linestyle='dashed', drawstyle='steps-post', label='Target Signal', color='blue')
+    plt.plot(input_signal.numpy().flatten(), linestyle='dashed', drawstyle='steps-post', label='Target Signal', color=col)
     plt.title('Target Signal')
     plt.xlabel('Time Step')
     plt.ylabel('Value')
@@ -101,9 +108,12 @@ def visualize_signals(input_signal, output_signal, ind):
     plt.ylabel('Value')
     plt.legend()
 
+    plt.title(name[0])
+
     plt.tight_layout()
-    # plt.savefig(f'./outputs/lstm_{ind}.png')
-    plt.show()
+    print(name)
+    plt.savefig(f'./outputs/lstm/{name[1]}.png')
+    # plt.show()
 
 
 # split dataset into train and validation sets
@@ -169,14 +179,15 @@ for i in range(5):
 
 test_set = AlternatingSignalDataset(test_x, test_y)
 
-print(test_set.inputs.__len__())
 
-# print(test_x)
+# print(test_set.inputs.__len__())
+
+# # print(test_x)
 # for i in range(10):
 
 #     print('='*10, f'\n {test_x[i].T} \n')
 
-#     visualize_signals(test_x[i], test_y[i], i)
+#     # visualize_signals(test_x[i], test_y[i], i)
 
 
 
@@ -287,7 +298,7 @@ def eval(dataloader):
 
 #     if not os.path.isdir('checkpoint'):
 #         os.mkdir('checkpoint')
-#     checkpoint_path = './checkpoint/lstm_signal_testing_ckpt.pth'
+#     checkpoint_path = './checkpoint/lstm_signal_testing_ckpt_5.pth'
 
 #     torch.save({
 #         'epoch': epoch,
@@ -333,21 +344,56 @@ def eval(dataloader):
 #                 visualize_signals(inputs[batch_idx].cpu().detach(), targets[batch_idx].cpu().detach(), ctr)
 #                 ctr+=1
 
-checkpoint = torch.load('./checkpoint/lstm_signal_testing_ckpt.pth')
+# TODO fix make into one loop code weirfd an messy
+
+
+i = 0
+
+checkpoint = torch.load(f'./checkpoint/lstm_signal_testing_ckpt_{i+1}.pth')
 model.load_state_dict(checkpoint['model_state_dict'])
 optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 epoch = checkpoint['epoch']
 
+
 inputs_tensor = test_x.to(device)
 targets_tensor = test_y.to(device)
+
+on = []
+off = []
+
+# for i in range(10):
+    # print(inputs_tensor[i].T)
 
 # Perform inference
 model.eval()
 with torch.no_grad():
-    print(inputs_tensor.shape)
     outputs = torch.sigmoid(model(inputs_tensor).squeeze().cpu().detach())
 
-# # Visualize the results
-for i in range(10):
-    visualize_signals(targets_tensor[i].cpu().detach(), outputs[i].cpu().detach(), 0)
+# Visualize the results
+for out in range(10):
+    if torch.round(inputs_tensor[out][0]).item() == 0:
+        name = (f'LSTM {i+1} (Input Starts OFF)', f'lstm_ckp_{i+1}_off_{out}')
+        col = 'blue'
+    else: 
+        col = 'green'
+        name = (f'LSTM {i+1} (Input Starts ON)', f'lstm_ckp_{i+1}_on_{out}')
 
+
+    
+
+    if col == 'green': 
+
+        print(col, torch.round(inputs_tensor[out].T))
+        on.append((targets_tensor[out].cpu().detach(), outputs[out].cpu().detach(), name, col))
+        print('\n', '='*5)
+
+    if col == 'blue': 
+
+        print(col, torch.round(inputs_tensor[out].T))
+        # off.append((targets_tensor[out].cpu().detach(), outputs[out].cpu().detach(), name, col))
+
+# for i in range(len(on)):
+#     # visualize_signals(on[i][0], on[i][1], on[i][2], on[i][3])
+
+# for i in range(len(off)):
+#     # visualize_signals(off[i][0], off[i][1], off[i][2], off[i][3])

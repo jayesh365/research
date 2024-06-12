@@ -21,8 +21,10 @@ import wandb
 
 import os
 
-np.random.seed(747208)
-
+# np.random.seed(10020)
+# np.random.seed(100201)
+# np.random.seed(1005694)
+np.random.seed(789221)
 
 class AlternatingSignalDataset(Dataset):
     def __init__(self, inputs, targets):
@@ -37,7 +39,7 @@ class AlternatingSignalDataset(Dataset):
 
 
 # generate data 
-def generate_alternating_signal(every_n, n, num_seq=100):
+def generate_alternating_signal(every_n, n, num_seq=100, custom_start_sig=None, custom_start=None):
     '''
     generate data to train S4D model
     data is of the form of 1|0 every n time steps for a total length of n
@@ -49,22 +51,34 @@ def generate_alternating_signal(every_n, n, num_seq=100):
     inputs = []
     targets = []
 
-    for seq_num in range(num_seq):
+    for _ in range(num_seq):
         # pick starting number for inital singal
-        start = np.random.randint(low=1, high=every_n)
+        if custom_start == None: 
+            # print('start should not print')
+            start = np.random.randint(low=1, high=every_n)
+        else: start = custom_start
+        
+        if custom_start_sig == None: 
+            starting_sig=np.random.randint(2, size=1)[0]
+        else: starting_sig = custom_start_sig
+
+        # print('='*3, f'\nstart {starting_sig} number of {start}.\n')
 
         remaining_length = n+1 - start
 
+
         # define the number of sections for each signal
         num_sections = int(np.ceil(remaining_length / every_n))
-
+    
         # create num_sections of signals
-        section = torch.concat((torch.ones(5), torch.zeros(5)))
+        if starting_sig == 1: section = torch.concat((torch.zeros(5), torch.ones(5)))
+        else: section = torch.concat((torch.ones(5), torch.zeros(5)))
 
         # create time series
         signal = section.repeat(num_sections)
         ts = signal[:remaining_length]
-        ts = torch.concat((torch.zeros(start), ts))
+        if starting_sig == 0: ts = torch.concat((torch.zeros(start), ts))
+        else: ts = torch.concat((torch.ones(start), ts))
 
 
         # Create input and target sequences
@@ -73,30 +87,38 @@ def generate_alternating_signal(every_n, n, num_seq=100):
 
         inputs.append(input_seq)
         targets.append(target_seq)
+        # print('DEBIG: ', custom_start, custom_start_sig, remaining_length, num_sections)
+
+    # for i in range(len(inputs)): print('signal: ', inputs[i].T, '='*3)
 
 
     return torch.stack(inputs), torch.stack(targets)
 
 
-def visualize_signals(input_signal, output_signal, ind):
+
+
+def visualize_signals(input_signal, output_signal, name, col):
     plt.figure(figsize=(14, 6))
 
     # Plot input signal
-    plt.plot(input_signal.numpy().flatten(), linestyle='dashed', drawstyle='steps-post', label='Target Signal')
+    plt.plot(input_signal.numpy().flatten(), linestyle='dashed', drawstyle='steps-post', label='Target Signal', color=col)
     plt.title('Target Signal')
     plt.xlabel('Time Step')
     plt.ylabel('Value')
     plt.legend()
 
-    plt.plot(output_signal.numpy().flatten(), linestyle='dashed', drawstyle='steps-post', label='Output Signal', color='green')
+    plt.plot(output_signal.numpy().flatten(), linestyle='dashed', drawstyle='steps-post', label='Output Signal', color='red')
     plt.title('Output Signal')
     plt.xlabel('Time Step')
     plt.ylabel('Value')
     plt.legend()
 
+    plt.title(name[0])
+
     plt.tight_layout()
-    plt.savefig(f'./outputs/s4_{ind}.png')
-    plt.show()
+    print(name)
+    plt.savefig(f'./outputs/s4d/{name[1]}.png')
+    # plt.show()
 
 
 # split dataset into train and validation sets
@@ -121,21 +143,53 @@ n_layers = 4
 dropout = 0.2
 prenorm = False
 
-epochs = 30
+epochs = 10
+
+batch_size = 64
+num_workers = 4
+
+# print('\n', '='*20, '\nTRAIN\n', '='*20, '\n')
+train_x, train_y = generate_alternating_signal(5, 100, 10000, custom_start=None, custom_start_sig=None)
+# print('\n', '='*20, '\nVAL\n', '='*20, '\n')
+
+val_x, val_y = generate_alternating_signal(5, 100, 10000, custom_start=None, custom_start_sig=None)
+
+# print('\n', '='*20, '\nTest\n', '='*20, '\n')
+
+test_x, test_y= torch.empty(0), torch.empty(0)
+
+for i in range(5):
+    if test_x.numel() == 0: test_x, test_y = generate_alternating_signal(5, 100, 1, custom_start_sig=0, custom_start=+1)
+    else: 
+        new_x, new_y = generate_alternating_signal(5, 100, 1, custom_start_sig= 0, custom_start= i+1)
+
+        test_x, test_y = torch.concat((test_x, new_x)), torch.concat((test_y, new_y))
+
+for i in range(5):
+    new_x, new_y = generate_alternating_signal(5, 100, 1, custom_start_sig= 1, custom_start= i+1)
+    test_x, test_y = torch.concat((test_x, new_x)), torch.concat((test_y, new_y))
+
+test_set = AlternatingSignalDataset(test_x, test_y)
+
+# print(test_set.inputs.__len__())
+
+# print(test_x)
+# for i in range(10):
+
+#     print('='*10, f'\n {test_x[i].T} \n')
+
+#     visualize_signals(test_x[i], test_y[i], i)
 
 
-train_input, train_target = generate_alternating_signal(5, 100, 10000)
-val_input, val_target = generate_alternating_signal(5, 100, 10000)
-test_input, test_target = generate_alternating_signal(5, 100, 10)
 
-train_set = AlternatingSignalDataset(train_input, train_target)
-val_set = AlternatingSignalDataset(val_input, val_target)
-test_set = AlternatingSignalDataset(test_input, test_target)
+
+train_set = AlternatingSignalDataset(train_x, train_y)
+val_set = AlternatingSignalDataset(val_x, val_y)
 
 trainset, _ = split_train_val(train_set, val_split=0.1)
 _, valset = split_train_val(val_set, val_split=0.1)
-batch_size = 64
-num_workers = 4
+test_set, _ = split_train_val(val_set, val_split=0)
+
 
 
 # Dataloaders
@@ -144,20 +198,18 @@ trainloader = DataLoader(
 valloader = DataLoader(
     valset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
 testloader = DataLoader(
-    test_set, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+    test_set, batch_size=1, shuffle=False, num_workers=num_workers)
 
 
-
-
-wandb.init(
-    project="s4 custom signals",
-    config={
-        "learning_rate": 0.01,
-        "architecture": "S4D",
-        "train_set": train_set,
-        "epochs": epochs,
-    }
-)
+# wandb.init(
+#     project="s4 custom signals",
+#     config={
+#         "learning_rate": 0.01,
+#         "architecture": "S4D",
+#         "train_set": train_set,
+#         "epochs": epochs,
+#     }
+# )
 
 # Dropout broke in PyTorch 1.11
 if tuple(map(int, torch.__version__.split('.')[:2])) == (1, 11):
@@ -392,45 +444,113 @@ def eval(epoch, dataloader, checkpoint=False):
             wandb.log({"val_loss": eval_loss / (batch_idx + 1), "epoch": epoch})
 
 
-pbar = tqdm(range(start_epoch, epochs))
-for epoch in pbar:
+# pbar = tqdm(range(start_epoch, epochs))
+# for epoch in pbar:
 
-    pbar.set_description('Epoch: %d' % (epoch))
+#     pbar.set_description('Epoch: %d' % (epoch))
 
-    train()
-    eval(epoch, testloader)
-    scheduler.step() 
+#     train()
+#     eval(epoch, testloader)
+#     scheduler.step() 
        
-    print(f"Epoch {epoch} learning rate: {scheduler.get_last_lr()}")
+#     print(f"Epoch {epoch} learning rate: {scheduler.get_last_lr()}")
 
-    if not os.path.isdir('checkpoint'):
-        os.mkdir('checkpoint')
-    checkpoint_path = './checkpoint/signal_testing_ckpt.pth'
+#     if not os.path.isdir('checkpoint'):
+#         os.mkdir('checkpoint')
+#     checkpoint_path = './checkpoint/s4d_signal_testing_ckpt_4.pth'
 
-    torch.save({
-        'epoch': epoch,
-        'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-    }, checkpoint_path)
+#     torch.save({
+#         'epoch': epoch,
+#         'model_state_dict': model.state_dict(),
+#         'optimizer_state_dict': optimizer.state_dict(),
+#     }, checkpoint_path)
 
-wandb.finish()
+# wandb.finish()
 
 
-checkpoint = torch.load('./checkpoint/signal_testing_ckpt.pth')
+# checkpoint = torch.load('./checkpoint/signal_testing_ckpt.pth')
+# model.load_state_dict(checkpoint['model_state_dict'])
+# optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+# epoch = checkpoint['epoch']
+
+# with torch.no_grad():
+#         pbar = tqdm(enumerate(testloader))
+#         ctr = 0
+#         for batch_idx, (inputs, targets) in pbar:
+#             # print(f'\nBatch index: {batch_idx}')
+#             inputs, targets = inputs.to(device), targets.to(device)
+#             # inputs = inputs.unsqueeze(0)
+#             outputs = torch.sigmoid(model(inputs).unsqueeze(-1).cpu().detach())
+#             # print(outputs.shape)
+#             for output in outputs:
+#                 # visualize_signals(inputs[batch_idx].cpu().detach(), targets[batch_idx].cpu().detach())
+#                 visualize_signals(targets[batch_idx].cpu().detach(), output, ctr)
+#                 ctr+=1
+
+
+# checkpoint = torch.load('./checkpoint/s4d_signal_testing_ckpt_4.pth')
+# model.load_state_dict(checkpoint['model_state_dict'])
+# optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+# epoch = checkpoint['epoch']
+
+# inputs_tensor = test_x.to(device)
+# targets_tensor = test_y.to(device)
+
+# # Perform inference
+# model.eval()
+# with torch.no_grad():
+#     print(inputs_tensor.shape)
+#     outputs = torch.sigmoid(model(inputs_tensor).squeeze().cpu().detach())
+
+# # # Visualize the results
+# for i in range(10):
+#     visualize_signals(targets_tensor[i].cpu().detach(), outputs[i].cpu().detach(), i)
+
+
+
+
+# TODO fix make into one loop code weirfd an messy
+
+i = 4
+
+checkpoint = torch.load(f'./checkpoint/s4d_signal_testing_ckpt_{i}.pth')
 model.load_state_dict(checkpoint['model_state_dict'])
 optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 epoch = checkpoint['epoch']
 
+
+inputs_tensor = test_x.to(device)
+targets_tensor = test_y.to(device)
+
+on = []
+off = []
+
+# for i in range(10):
+    # print(inputs_tensor[i].T)
+
+# Perform inference
+model.eval()
 with torch.no_grad():
-        pbar = tqdm(enumerate(testloader))
-        ctr = 0
-        for batch_idx, (inputs, targets) in pbar:
-            # print(f'\nBatch index: {batch_idx}')
-            inputs, targets = inputs.to(device), targets.to(device)
-            # inputs = inputs.unsqueeze(0)
-            outputs = torch.sigmoid(model(inputs).unsqueeze(-1).cpu().detach())
-            # print(outputs.shape)
-            for output in outputs:
-                # visualize_signals(inputs[batch_idx].cpu().detach(), targets[batch_idx].cpu().detach())
-                visualize_signals(targets[batch_idx].cpu().detach(), output, ctr)
-                ctr+=1
+    outputs = torch.sigmoid(model(inputs_tensor).squeeze().cpu().detach())
+
+# Visualize the results
+for out in range(10):
+    if torch.round(inputs_tensor[out][0]).item() == 0:
+        name = (f'S4D {i} (Input Starts OFF)', f's4d_ckp_{i}_off_{out}')
+        col = 'blue'
+    else: 
+        col = 'green'
+        name = (f'S4D {i} (Input Starts ON)', f's4d_ckp_{i}_on_{out}')
+
+
+    print(col, torch.round(inputs_tensor[out][0]).item())
+    
+
+    if col == 'green': on.append((targets_tensor[out].cpu().detach(), outputs[out].cpu().detach(), name, col))
+    if col == 'blue': off.append((targets_tensor[out].cpu().detach(), outputs[out].cpu().detach(), name, col))
+
+for i in range(len(on)):
+    visualize_signals(on[i][0], on[i][1], on[i][2], on[i][3])
+
+for i in range(len(off)):
+    visualize_signals(off[i][0], off[i][1], off[i][2], off[i][3])
