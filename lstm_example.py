@@ -15,6 +15,12 @@ import os
 import wandb
 
 
+# TODO : make sure data generated is as needed
+#        label each model and result accurately
+#        note model arch
+#        make everything run in one go; training and results for each seed
+
+# np.random.seed(879965)
 # np.random.seed(10020)
 # np.random.seed(100201)
 # np.random.seed(1005694)
@@ -32,6 +38,127 @@ class AlternatingSignalDataset(Dataset):
 
     def __getitem__(self, idx):
         return self.inputs[idx], self.targets[idx]
+
+def generate_inter_trial_interval(num_seq=1000, n=200, holdout_intervals=None):
+    '''
+    Generate data to train S4D model.
+    Data is of the form: initially off for (20-40) time steps, 
+    then on for 10 time steps, and repeats.
+    The length of the signals should be 200 time steps.
+    '''
+    holdout_inputs = []
+    holdout_targets = []
+    inputs = []
+    targets = []
+
+    for seq_num in range(num_seq):
+        signal = []
+        length = 0
+        
+        while length < n:
+            off_length = np.random.randint(20, 41)
+            on_length = 10
+            signal.extend([0] * off_length)
+            signal.extend([1] * on_length)
+            length += off_length + on_length
+
+        signal = signal[:n]
+        ts = torch.tensor(signal, dtype=torch.float32).unsqueeze(-1)
+        
+        # Create input and target sequences
+        input_seq = ts
+        target_seq = torch.cat((ts[1:], torch.tensor([0], dtype=torch.float32).unsqueeze(-1)), dim=0)
+        
+        # Check if the current sequence is part of the holdout intervals
+        if holdout_intervals and seq_num in holdout_intervals:
+            holdout_inputs.append(input_seq)
+            holdout_targets.append(target_seq)
+        else:
+            inputs.append(input_seq)
+            targets.append(target_seq)
+
+    return torch.stack(inputs), torch.stack(targets), torch.stack(holdout_inputs), torch.stack(holdout_targets)
+
+# def visualize_signals(input_signal, target_signal):
+#     plt.figure(figsize=(12, 6))
+    
+#     # plt.subplot(2, 1, 1)
+#     plt.plot(input_signal.numpy(), 'r--', drawstyle='steps-post')
+#     plt.title('Input Signal')
+    
+#     # plt.subplot(2, 1, 2)
+#     plt.plot(target_signal.numpy(), 'b--', drawstyle='steps-post')
+#     plt.title('Target Signal')
+    
+#     plt.tight_layout()
+#     plt.show()
+
+
+
+# Split train data into train and validation sets
+def split_train_val(train_inputs, train_targets, val_split=0.1):
+    dataset_size = len(train_inputs)
+    indices = list(range(dataset_size))
+    split = int(np.floor(val_split * dataset_size))
+    
+    np.random.shuffle(indices)
+    
+    train_indices, val_indices = indices[split:], indices[:split]
+    
+    train_inputs_split = train_inputs[train_indices]
+    train_targets_split = train_targets[train_indices]
+    
+    val_inputs_split = train_inputs[val_indices]
+    val_targets_split = train_targets[val_indices]
+    
+    return train_inputs_split, train_targets_split, val_inputs_split, val_targets_split
+
+
+hld_ot_int = np.random.randint(0, 99, size=10).tolist()
+print(hld_ot_int)
+# Generate data with holdout intervals
+train_inputs, train_targets, test_inputs, test_targets = generate_inter_trial_interval(1000, 200, holdout_intervals=hld_ot_int)
+
+train_inputs_split, train_targets_split, val_inputs_split, val_targets_split = split_train_val(train_inputs, train_targets, val_split=0.1)
+
+
+# Save tensors to a file
+torch.save({'inputs': test_inputs, 'targets': test_targets}, 'test_tensors.pth')
+
+
+train_set = AlternatingSignalDataset(train_inputs_split, train_targets_split)
+val_set = AlternatingSignalDataset(val_inputs_split, val_targets_split)
+test_set = AlternatingSignalDataset(test_inputs, test_targets)
+
+
+# def visualize_signals(input_signal, target_signal):
+#     plt.figure(figsize=(12, 6))
+    
+#     plt.subplot(2, 1, 1)
+#     plt.plot(input_signal.numpy(), 'r--', drawstyle='steps-post')
+#     plt.title('Input Signal')
+    
+#     plt.subplot(2, 1, 2)
+#     plt.plot(target_signal.numpy(), 'b--', drawstyle='steps-post')
+#     plt.title('Target Signal')
+    
+#     plt.tight_layout()
+#     plt.show()
+
+# # Visualize a sample from the training data
+# visualize_signals(train_inputs_split[0], train_targets_split[0])
+
+# Visualize a sample from the holdout data
+# visualize_signals(test_inputs[0], test_targets[0])
+
+print('\n')
+print(f'train inputs split shape: {train_inputs_split.shape}')
+print(f'train targets split shape: {train_targets_split.shape}')
+print(f'val inputs split shape: {val_inputs_split.shape}')
+print(f'val targets split shape: {val_targets_split.shape}')
+print(f'test inputs  shape: {test_inputs.shape}')
+print(f'test targets  shape: {test_targets.shape}')
+print('\n')
 
 # generate data 
 def generate_alternating_signal(every_n, n, num_seq=100, custom_start_sig=None, custom_start=None):
@@ -92,7 +219,7 @@ def generate_alternating_signal(every_n, n, num_seq=100, custom_start_sig=None, 
 
 
 
-def visualize_signals(input_signal, output_signal, name, col):
+def visualize_signals_og(input_signal, output_signal, name, col, save_path):
     plt.figure(figsize=(14, 6))
 
     # Plot input signal
@@ -111,8 +238,8 @@ def visualize_signals(input_signal, output_signal, name, col):
     plt.title(name[0])
 
     plt.tight_layout()
-    print(name)
-    plt.savefig(f'./outputs/lstm/{name[1]}.png')
+    # print(name)
+    plt.savefig(save_path)
     # plt.show()
 
 
@@ -134,12 +261,12 @@ class LSTM(nn.Module):
 
         self.lstm = nn.LSTM(
             input_size=1, 
-            hidden_size=128,
+            hidden_size=8,
             num_layers=4,
             batch_first=True,
             )
         
-        self.linear = nn.Linear(128, 1)
+        self.linear = nn.Linear(8, 1)
 
 
     def forward(self, x):
@@ -152,32 +279,32 @@ class LSTM(nn.Module):
 
 
 # load data
-batch_size = 100
+batch_size = 32
 num_workers = 4
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-# print('\n', '='*20, '\nTRAIN\n', '='*20, '\n')
-train_x, train_y = generate_alternating_signal(5, 100, 10000, custom_start=None, custom_start_sig=None)
-# print('\n', '='*20, '\nVAL\n', '='*20, '\n')
+# # print('\n', '='*20, '\nTRAIN\n', '='*20, '\n')
+# train_x, train_y = generate_alternating_signal(5, 100, 10000, custom_start=None, custom_start_sig=None)
+# # print('\n', '='*20, '\nVAL\n', '='*20, '\n')
 
-val_x, val_y = generate_alternating_signal(5, 100, 10000, custom_start=None, custom_start_sig=None)
+# val_x, val_y = generate_alternating_signal(5, 100, 10000, custom_start=None, custom_start_sig=None)
 
-# print('\n', '='*20, '\nTest\n', '='*20, '\n')
+# # print('\n', '='*20, '\nTest\n', '='*20, '\n')
 
-test_x, test_y= torch.empty(0), torch.empty(0)
+# test_x, test_y= torch.empty(0), torch.empty(0)
 
-for i in range(5):
-    if test_x.numel() == 0: test_x, test_y = generate_alternating_signal(5, 100, 1, custom_start_sig=0, custom_start=+1)
-    else: 
-        new_x, new_y = generate_alternating_signal(5, 100, 1, custom_start_sig= 0, custom_start= i+1)
+# for i in range(5):
+#     if test_x.numel() == 0: test_x, test_y = generate_alternating_signal(5, 100, 1, custom_start_sig=0, custom_start=+1)
+#     else: 
+#         new_x, new_y = generate_alternating_signal(5, 100, 1, custom_start_sig= 0, custom_start= i+1)
 
-        test_x, test_y = torch.concat((test_x, new_x)), torch.concat((test_y, new_y))
+#         test_x, test_y = torch.concat((test_x, new_x)), torch.concat((test_y, new_y))
 
-for i in range(5):
-    new_x, new_y = generate_alternating_signal(5, 100, 1, custom_start_sig= 1, custom_start= i+1)
-    test_x, test_y = torch.concat((test_x, new_x)), torch.concat((test_y, new_y))
+# for i in range(5):
+#     new_x, new_y = generate_alternating_signal(5, 100, 1, custom_start_sig= 1, custom_start= i+1)
+#     test_x, test_y = torch.concat((test_x, new_x)), torch.concat((test_y, new_y))
 
-test_set = AlternatingSignalDataset(test_x, test_y)
+# test_set = AlternatingSignalDataset(test_x, test_y)
 
 
 # print(test_set.inputs.__len__())
@@ -192,20 +319,20 @@ test_set = AlternatingSignalDataset(test_x, test_y)
 
 
 
-train_set = AlternatingSignalDataset(train_x, train_y)
-val_set = AlternatingSignalDataset(val_x, val_y)
+# train_set = AlternatingSignalDataset(train_x, train_y)
+# val_set = AlternatingSignalDataset(val_x, val_y)
 
-trainset, _ = split_train_val(train_set, val_split=0.1)
-_, valset = split_train_val(val_set, val_split=0.1)
-test_set, _ = split_train_val(val_set, val_split=0)
+trainset, _ = split_train_val(test_set, val_split=0.2)
+_, valset = split_train_val(test_set, val_split=0.1)
+test_set, _ = split_train_val(test_set, val_split=0)
 
 
 
 # Dataloaders
 trainloader = DataLoader(
-    trainset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+    trainset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 valloader = DataLoader(
-    valset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
+    valset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 testloader = DataLoader(
     test_set, batch_size=1, shuffle=False, num_workers=num_workers)
 
@@ -214,19 +341,40 @@ model = LSTM()
 criterion = nn.BCEWithLogitsLoss()
 optimizer = optim.AdamW(model.parameters(), lr=0.001)
 
-epochs = 100
+epochs = 1000
 
 model = model.to(device)
 if device == 'cuda':
     cudnn.benchmark = True
 
 
+
+
 # wandb.init(
-#     project="LSTM custom signals",
-#     config={
+#     project="LSTM signals",
+#     config={pbar = tqdm(range(start_epoch, epochs))
+# for epoch in pbar:
+
+#     pbar.set_description('Epoch: %d' % (epoch))
+
+#     train()
+#     eval(epoch, testloader)
+#     scheduler.step() 
+    
+#     print(f"Epoch {epoch} learning rate: {scheduler.get_last_lr()}")
+
+#     if not os.path.isdir('checkpoint'):
+#         os.mkdir('checkpoint')
+#     checkpoint_path = f'./checkpoint/s4d_signal_ckpt_{4}.pth'
+
+#     torch.save({
+#         'epoch': epoch,
+#         'model_state_dict': model.state_dict(),
+#         'optimizer_state_dict': optimizer.state_dict(),
+#     }, checkpoint_path)
 #         "learning_rate": 0.001,
 #         "architecture": "LSTM",
-#         "train_set": train_set,
+#         "train_set": test_set,
 #         "epochs": epochs,
 #     }
 # )
@@ -287,7 +435,21 @@ def eval(dataloader):
 
             wandb.log({"val_loss": eval_loss / (batch_ind + 1), "epoch": epoch})
 
+seeds = [879965, 10020, 100201, 1005694, 789221]
 
+
+# for model_it in range(5):
+
+
+# wandb.init(
+#     project="LSTM",
+#     config={
+#         "learning_rate": 0.001,
+#         "architecture": "lstm",
+#         "train_set": train_set,
+#         "epochs": epochs,
+#     }
+# )
 
 # pbar = tqdm(range(0, epochs))
 # for epoch in pbar:
@@ -298,7 +460,7 @@ def eval(dataloader):
 
 #     if not os.path.isdir('checkpoint'):
 #         os.mkdir('checkpoint')
-#     checkpoint_path = './checkpoint/lstm_signal_testing_ckpt_5.pth'
+#     checkpoint_path = f'./checkpoint/lstm_signal_testing_ckpt_{4}.pth'
 
 #     torch.save({
 #         'epoch': epoch,
@@ -344,56 +506,65 @@ def eval(dataloader):
 #                 visualize_signals(inputs[batch_idx].cpu().detach(), targets[batch_idx].cpu().detach(), ctr)
 #                 ctr+=1
 
+
+
+
+
 # TODO fix make into one loop code weirfd an messy
 
 
-i = 0
+# test_ckpt = torch.load('test_tensors.pth')
+# test_inputs = test_ckpt['inputs']
+# test_targets = test_ckpt['targets']
 
-checkpoint = torch.load(f'./checkpoint/lstm_signal_testing_ckpt_{i+1}.pth')
-model.load_state_dict(checkpoint['model_state_dict'])
-optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-epoch = checkpoint['epoch']
+# for ind, seed in enumerate(seeds):
 
+#     print('#'*10)
+#     print(f'\nworking on model {ind}, with seed {seed}...')
+#     np.random.seed(seed)
 
-inputs_tensor = test_x.to(device)
-targets_tensor = test_y.to(device)
+#     print(f'\nloading checkpoint lstm_signal_testing_ckpt_{ind}.pth\n')
+#     checkpoint = torch.load(f'./checkpoint/lstm_signal_testing_ckpt_{ind}.pth')
+#     print(f'loading model state dict...\n')
+#     model.load_state_dict(checkpoint['model_state_dict'])
+#     print(f'loading optimizer state dict...\n')
+#     optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
 
-on = []
-off = []
-
-# for i in range(10):
-    # print(inputs_tensor[i].T)
-
-# Perform inference
-model.eval()
-with torch.no_grad():
-    outputs = torch.sigmoid(model(inputs_tensor).squeeze().cpu().detach())
-
-# Visualize the results
-for out in range(10):
-    if torch.round(inputs_tensor[out][0]).item() == 0:
-        name = (f'LSTM {i+1} (Input Starts OFF)', f'lstm_ckp_{i+1}_off_{out}')
-        col = 'blue'
-    else: 
-        col = 'green'
-        name = (f'LSTM {i+1} (Input Starts ON)', f'lstm_ckp_{i+1}_on_{out}')
+#     epoch = checkpoint['epoch']
 
 
+#     print(test_inputs.shape)
+#     print(test_targets.shape)
     
+#     inputs_tensor = test_inputs.to(device)
+#     targets_tensor = test_targets.to(device)
 
-    if col == 'green': 
+#     on = []
+#     off = []
 
-        print(col, torch.round(inputs_tensor[out].T))
-        on.append((targets_tensor[out].cpu().detach(), outputs[out].cpu().detach(), name, col))
-        print('\n', '='*5)
+#     print(f'performing inference...\n')
+#     # Perform inference
+#     model.eval()
+#     with torch.no_grad():
+#         outputs = torch.sigmoid(model(inputs_tensor).squeeze().cpu().detach())
 
-    if col == 'blue': 
+#     print('visualizing results...\n')
+#     # Visualize the results
+#     for out in range(5):nph}/{name[1]}.png'
 
-        print(col, torch.round(inputs_tensor[out].T))
-        # off.append((targets_tensor[out].cpu().detach(), outputs[out].cpu().detach(), name, col))
+#         if col == 'green': 
+#             # print(col, torch.round(inputs_tensor[out].T))
+#             on.append((targets_tensor[out].cpu().detach(), outputs[out].cpu().detach(), name, col, save_path))
+#             # print('\n', '='*5)
 
-# for i in range(len(on)):
-#     # visualize_signals(on[i][0], on[i][1], on[i][2], on[i][3])
+#         if col == 'blue': 
+#             # print(col, torch.round(inputs_tensor[out].T))
+#             off.append((targets_tensor[out].cpu().detach(), outputs[out].cpu().detach(), name, col, save_path))
 
-# for i in range(len(off)):
-#     # visualize_signals(off[i][0], off[i][1], off[i][2], off[i][3])
+#     # for i in range(len(on)):
+#     #     visualize_signals(on[i][0], on[i][1], on[i][2], on[i][3])
+
+#     for i in range(len(off)):
+#         visualize_signals_og(off[i][0], off[i][1], off[i][2], off[i][3], off[i][4])
+    
+#     print(f'finished working on model {ind}, with seed {seed}...\n')
